@@ -1,4 +1,4 @@
-# app.py - Main Flask Application
+# app.py - Main Flask Application (2025-26 Season)
 from flask import Flask, jsonify, request, render_template
 from flask_cors import CORS
 import pandas as pd
@@ -34,7 +34,7 @@ class PremierLeaguePredictor:
         except:
             print("Models not found, will train new ones")
             
-    def fetch_team_stats(self, team_name, season='2024-25'):
+    def fetch_team_stats(self, team_name, season='2025-26'):
         """Fetch team statistics from API"""
         # Using football-api.com or similar service
         url = f"https://api.football-api.com/v2/teams/{team_name}/stats"
@@ -51,14 +51,17 @@ class PremierLeaguePredictor:
         return self.get_mock_team_stats(team_name)
     
     def get_mock_team_stats(self, team_name):
-        """Provide mock data for development/testing"""
+        """Provide mock data for 2025-26 Premier League teams"""
         mock_stats = {
+            # Top 6
             'Manchester City': {'goals_per_game': 2.8, 'goals_conceded_per_game': 0.9, 'form': [3, 3, 1, 3, 3]},
             'Arsenal': {'goals_per_game': 2.4, 'goals_conceded_per_game': 1.1, 'form': [3, 1, 3, 3, 0]},
             'Liverpool': {'goals_per_game': 2.6, 'goals_conceded_per_game': 1.0, 'form': [3, 3, 3, 1, 3]},
             'Chelsea': {'goals_per_game': 2.1, 'goals_conceded_per_game': 1.2, 'form': [3, 0, 1, 3, 1]},
             'Manchester United': {'goals_per_game': 1.9, 'goals_conceded_per_game': 1.4, 'form': [1, 3, 0, 1, 3]},
             'Tottenham': {'goals_per_game': 2.3, 'goals_conceded_per_game': 1.3, 'form': [3, 1, 3, 0, 1]},
+            
+            # Established Premier League teams
             'Newcastle United': {'goals_per_game': 2.0, 'goals_conceded_per_game': 1.2, 'form': [3, 1, 1, 3, 3]},
             'Brighton': {'goals_per_game': 1.8, 'goals_conceded_per_game': 1.3, 'form': [1, 3, 1, 0, 3]},
             'Aston Villa': {'goals_per_game': 2.0, 'goals_conceded_per_game': 1.1, 'form': [3, 3, 1, 3, 1]},
@@ -69,10 +72,12 @@ class PremierLeaguePredictor:
             'Everton': {'goals_per_game': 1.3, 'goals_conceded_per_game': 1.7, 'form': [1, 0, 0, 1, 1]},
             'Brentford': {'goals_per_game': 1.7, 'goals_conceded_per_game': 1.4, 'form': [3, 1, 0, 3, 1]},
             'Nottingham Forest': {'goals_per_game': 1.4, 'goals_conceded_per_game': 1.5, 'form': [1, 1, 0, 1, 3]},
-            'Sheffield United': {'goals_per_game': 1.2, 'goals_conceded_per_game': 1.8, 'form': [0, 0, 1, 0, 1]},
-            'Burnley': {'goals_per_game': 1.1, 'goals_conceded_per_game': 1.9, 'form': [0, 1, 0, 0, 0]},
-            'Luton Town': {'goals_per_game': 1.3, 'goals_conceded_per_game': 1.7, 'form': [1, 0, 1, 0, 1]},
-            'AFC Bournemouth': {'goals_per_game': 1.6, 'goals_conceded_per_game': 1.5, 'form': [1, 3, 0, 1, 1]}
+            'AFC Bournemouth': {'goals_per_game': 1.6, 'goals_conceded_per_game': 1.5, 'form': [1, 3, 0, 1, 1]},
+            
+            # PROMOTED TEAMS for 2025-26
+            'Leeds United': {'goals_per_game': 2.2, 'goals_conceded_per_game': 1.3, 'form': [3, 3, 3, 3, 1]},      # Championship winners - strong attack
+            'Burnley': {'goals_per_game': 1.8, 'goals_conceded_per_game': 1.4, 'form': [3, 1, 3, 1, 3]},          # Promoted - new manager Scott Parker
+            'Sunderland': {'goals_per_game': 1.7, 'goals_conceded_per_game': 1.5, 'form': [3, 1, 1, 3, 1]}        # Playoff winners - first season back
         }
         return mock_stats.get(team_name, {'goals_per_game': 1.5, 'goals_conceded_per_game': 1.5, 'form': [1, 1, 1, 1, 1]})
     
@@ -151,7 +156,8 @@ class PremierLeaguePredictor:
             'away_win_probability': round(away_win_prob * 100, 1),
             'most_likely_scorelines': [(score, round(prob * 100, 2)) for score, prob in top_scorelines],
             'confidence_score': self.calculate_confidence(home_win_prob, draw_prob, away_win_prob),
-            'prediction_timestamp': datetime.now().isoformat()
+            'prediction_timestamp': datetime.now().isoformat(),
+            'season': '2025-26'
         }
     
     def calculate_confidence(self, home_prob, draw_prob, away_prob):
@@ -169,8 +175,9 @@ predictor = PremierLeaguePredictor()
 @app.route('/')
 def index():
     return jsonify({
-        "message": "Premier League Betting Predictor API",
-        "version": "1.0",
+        "message": "Premier League Betting Predictor API - 2025/26 Season",
+        "version": "2.0",
+        "season": "2025-26",
         "status": "active",
         "endpoints": {
             "/predict": "POST - Predict match outcome",
@@ -230,11 +237,11 @@ def get_fixtures():
         },
         {
             'id': 3,
-            'home_team': 'Manchester United',
+            'home_team': 'Leeds United',
             'away_team': 'Tottenham',
             'date': (today + timedelta(days=3)).strftime('%Y-%m-%d'),
             'time': '16:30', 
-            'stadium': 'Old Trafford',
+            'stadium': 'Elland Road',
             'gameweek': 3
         },
         {
@@ -248,26 +255,35 @@ def get_fixtures():
         },
         {
             'id': 5,
-            'home_team': 'Aston Villa',
+            'home_team': 'Sunderland',
             'away_team': 'West Ham United',
             'date': (today + timedelta(days=7)).strftime('%Y-%m-%d'),
             'time': '15:00',
-            'stadium': 'Villa Park',
+            'stadium': 'Stadium of Light',
+            'gameweek': 4
+        },
+        {
+            'id': 6,
+            'home_team': 'Burnley',
+            'away_team': 'Manchester United',
+            'date': (today + timedelta(days=7)).strftime('%Y-%m-%d'),
+            'time': '17:30',
+            'stadium': 'Turf Moor',
             'gameweek': 4
         }
     ]
     
-    return jsonify({'fixtures': fixtures, 'total': len(fixtures)})
+    return jsonify({'fixtures': fixtures, 'total': len(fixtures), 'season': '2025-26'})
 
 @app.route('/teams', methods=['GET'])
 def get_teams():
-    """Get all Premier League teams"""
+    """Get all 2025-26 Premier League teams"""
     teams = [
-        'Arsenal', 'Aston Villa', 'Brighton', 'Brentford', 'Burnley',
+        'Arsenal', 'Aston Villa', 'Brighton', 'Brentford', 'Burnley',        # Burnley promoted
         'Chelsea', 'Crystal Palace', 'Everton', 'Fulham', 'Liverpool',
         'Manchester City', 'Manchester United', 'Newcastle United',
-        'Nottingham Forest', 'Sheffield United', 'Tottenham', 
-        'West Ham United', 'Wolves', 'AFC Bournemouth', 'Luton Town'
+        'Nottingham Forest', 'Leeds United', 'Tottenham',                    # Leeds promoted  
+        'West Ham United', 'Wolves', 'AFC Bournemouth', 'Sunderland'        # Sunderland promoted
     ]
     
     # Add team stats for each team
@@ -281,26 +297,37 @@ def get_teams():
             'form_points': sum(stats['form'][:5])
         })
     
-    return jsonify({'teams': teams_with_stats, 'total': len(teams_with_stats)})
+    return jsonify({'teams': teams_with_stats, 'total': len(teams_with_stats), 'season': '2025-26'})
 
 @app.route('/results/<team_name>', methods=['GET'])
 def get_team_results(team_name):
     """Get recent results for a specific team"""
-    # Mock recent results - in production, fetch from API
+    # Mock recent results for 2025-26 season
     mock_results = {
         'Manchester City': [
             {'opponent': 'Liverpool', 'result': 'W', 'score': '2-1', 'date': '2025-08-15', 'home': True},
             {'opponent': 'Chelsea', 'result': 'W', 'score': '3-1', 'date': '2025-08-08', 'home': False}, 
-            {'opponent': 'Arsenal', 'result': 'D', 'score': '1-1', 'date': '2025-08-01', 'home': True},
-            {'opponent': 'Tottenham', 'result': 'W', 'score': '2-0', 'date': '2025-07-25', 'home': False},
-            {'opponent': 'Newcastle', 'result': 'W', 'score': '1-0', 'date': '2025-07-18', 'home': True}
+            {'opponent': 'Arsenal', 'result': 'D', 'score': '1-1', 'date': '2025-08-01', 'home': True}
         ],
         'Arsenal': [
             {'opponent': 'Chelsea', 'result': 'W', 'score': '2-1', 'date': '2025-08-15', 'home': True},
             {'opponent': 'Liverpool', 'result': 'D', 'score': '1-1', 'date': '2025-08-08', 'home': False}, 
-            {'opponent': 'Manchester City', 'result': 'W', 'score': '3-0', 'date': '2025-08-01', 'home': True},
-            {'opponent': 'Tottenham', 'result': 'W', 'score': '2-1', 'date': '2025-07-25', 'home': False},
-            {'opponent': 'Brighton', 'result': 'L', 'score': '0-1', 'date': '2025-07-18', 'home': True}
+            {'opponent': 'Manchester City', 'result': 'W', 'score': '3-0', 'date': '2025-08-01', 'home': True}
+        ],
+        'Leeds United': [
+            {'opponent': 'Sunderland', 'result': 'W', 'score': '2-0', 'date': '2025-08-17', 'home': True},
+            {'opponent': 'Burnley', 'result': 'W', 'score': '1-0', 'date': '2025-08-10', 'home': False}, 
+            {'opponent': 'Brighton', 'result': 'W', 'score': '3-1', 'date': '2025-08-03', 'home': True}
+        ],
+        'Sunderland': [
+            {'opponent': 'Leeds United', 'result': 'L', 'score': '0-2', 'date': '2025-08-17', 'home': False},
+            {'opponent': 'Burnley', 'result': 'D', 'score': '1-1', 'date': '2025-08-10', 'home': True}, 
+            {'opponent': 'Everton', 'result': 'W', 'score': '2-1', 'date': '2025-08-03', 'home': False}
+        ],
+        'Burnley': [
+            {'opponent': 'Leeds United', 'result': 'L', 'score': '0-1', 'date': '2025-08-10', 'home': True},
+            {'opponent': 'Sunderland', 'result': 'D', 'score': '1-1', 'date': '2025-08-10', 'home': False}, 
+            {'opponent': 'Crystal Palace', 'result': 'W', 'score': '2-0', 'date': '2025-08-03', 'home': True}
         ]
     }
     
@@ -309,7 +336,7 @@ def get_team_results(team_name):
         {'opponent': 'Unknown', 'result': 'D', 'score': '1-1', 'date': '2025-08-08', 'home': False}
     ])
     
-    return jsonify({'team': team_name, 'recent_results': results, 'total': len(results)})
+    return jsonify({'team': team_name, 'recent_results': results, 'total': len(results), 'season': '2025-26'})
 
 @app.route('/batch-predict', methods=['POST'])
 def batch_predict():
@@ -332,7 +359,7 @@ def batch_predict():
                     'error': str(e)
                 })
     
-    return jsonify({'predictions': predictions, 'total': len(predictions)})
+    return jsonify({'predictions': predictions, 'total': len(predictions), 'season': '2025-26'})
 
 @app.route('/health', methods=['GET'])
 def health_check():
@@ -340,7 +367,8 @@ def health_check():
     return jsonify({
         'status': 'healthy',
         'timestamp': datetime.now().isoformat(),
-        'version': '1.0'
+        'version': '2.0',
+        'season': '2025-26'
     })
 
 # Error handlers
